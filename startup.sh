@@ -22,7 +22,7 @@ except IntegrityError:
 EOF
 }
 
-echo "[INFO] Waiting for DB 333333"
+echo "[INFO] Waiting for DB"
 echo $DB_HOST
 nc -z -v ${DB_HOST:-db} ${DB_PORT:-5432} 
 echo "----------------------------------"

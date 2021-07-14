@@ -1,0 +1,2 @@
+*.sh text eol=lf
+static/bootstrap/* linguist-vendored=true

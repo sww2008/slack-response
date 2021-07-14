@@ -19,8 +19,11 @@
             "essential": true,
             "image": "vivien2008/cron",
             "name": "cron",
-            "links": [
-                "response"
+            "dependsOn": [
+                {
+                    "containerName": "response",
+                    "condition": "COMPLETE"
+                }
             ]
         },
         {
@@ -74,8 +77,11 @@
                     "hostPort": 8000
                 }
             ],
-            "links": [
-                "db"
+            "dependsOn": [
+                {
+                    "containerName": "db",
+                    "condition": "COMPLETE"
+                }
             ],
             "mountPoints": [
                 {
@@ -99,6 +105,12 @@
                     "sourceVolume": "postgres",
                     "containerPath": "/var/lib/postgresql/data/"
                 }
+            ],
+            "portMappings": [
+                {
+                    "containerPort": 5432,
+                    "hostPort": 5432
+                }
             ]
         },
         {
@@ -121,8 +133,11 @@
                     "hostPort": 4040
                 }
             ],
-            "links": [
-                "response"
+            "dependsOn": [
+                {
+                    "containerName": "response",
+                    "condition": "COMPLETE"
+                }
             ]
         }
     ]
