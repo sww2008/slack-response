@@ -1,0 +1,129 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "volumes": [
+        {
+            "name": "postgres",
+            "host": {
+                "sourcePath": "/var/app/postgres"
+            }
+        },
+        {
+            "name": "pypd",
+            "host": {
+                "sourcePath": "/var/app/pypd"
+            }
+        }
+    ],
+    "containerDefinitions": [
+        {
+            "essential": true,
+            "image": "vivien2008/cron",
+            "name": "cron",
+            "links": [
+                "response"
+            ]
+        },
+        {
+            "command": [
+                "/bin/bash",
+                "startup.sh"
+            ],
+            "workingDirectory": [
+                "/app/"
+            ],
+            "environment": [
+                {
+                    "name": "SLACK_TOKEN",
+                    "value": "xoxb-2258508362773-2285979760656-hGPmkHHjcY5EejpogDdMTo5a"
+                },
+                {
+                    "name": "SLACK_SIGNING_SECRET",
+                    "value": "134bcc2255a9d742d7c7b3a47ec3b080"
+                },
+                {
+                    "name": "INCIDENT_CHANNEL_NAME",
+                    "value": "incidents"
+                },
+                {
+                    "name": "INCIDENT_BOT_NAME",
+                    "value": "response"
+                },
+                {
+                    "name": "INCIDENT_REPORT_CHANNEL_NAME",
+                    "value": "incident-reports"
+                },
+                {
+                    "name": "DJANGO_SETTINGS_MODULE",
+                    "value": "demo.settings.dev"
+                },
+                {
+                    "name": "POSTGRES",
+                    "value": "true"
+                },
+                {
+                    "name": "SITE_URL",
+                    "value": "http://localhost:8000"
+                }
+            ],
+            "essential": true,
+            "image": "vivien2008/response",
+            "name": "response",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "hostPort": 8000
+                }
+            ],
+            "links": [
+                "db"
+            ],
+            "mountPoints": [
+                {
+                    "sourceVolume": "pypd",
+                    "containerPath": "/app/pypd"
+                }
+            ]
+        },
+        {
+            "environment": [
+                {
+                    "name": "POSTGRES_HOST_AUTH_METHOD",
+                    "value": "trust"
+                }
+            ],
+            "essential": true,
+            "image": "postgres:11.10",
+            "name": "db",
+            "mountPoints": [
+                {
+                    "sourceVolume": "postgres",
+                    "containerPath": "/var/lib/postgresql/data/"
+                }
+            ]
+        },
+        {
+            "environment": [
+                {
+                    "name": "TARGET_HOST",
+                    "value": "response"
+                },
+                {
+                    "name": "TARGET_PORT",
+                    "value": "8000"
+                }
+            ],
+            "essential": true,
+            "image": "gtriggiano/ngrok-tunnel",
+            "name": "ngrok",
+            "portMappings": [
+                {
+                    "containerPort": 4040,
+                    "hostPort": 4040
+                }
+            ],
+            "links": [
+                "response"
+            ]
+        }
+    ]
+}
